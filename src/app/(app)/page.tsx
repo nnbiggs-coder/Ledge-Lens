@@ -1,4 +1,5 @@
 import { PageHeader } from "@/components/layout/page-header";
+import { ExecutiveHeadlineBanner } from "@/components/dashboard/executive-headline";
 import { PortfolioSummary } from "@/components/dashboard/portfolio-summary";
 import { PremiumChart } from "@/components/dashboard/premium-chart";
 import { RecentSubmissions } from "@/components/dashboard/recent-submissions";
@@ -20,6 +21,7 @@ export default function DashboardPage() {
         </Badge>
       </PageHeader>
 
+      <ExecutiveHeadlineBanner submissions={submissions} />
       <PortfolioSummary submissions={submissions} />
       <StatsCards submissions={submissions} />
 

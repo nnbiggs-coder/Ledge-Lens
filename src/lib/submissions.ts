@@ -142,3 +142,53 @@ export function getPremiumByLineOfBusiness(submissions: Submission[]) {
     shortLine: lineOfBusinessLabels[lob].replace("Commercial ", "C. "),
   }));
 }
+
+export interface ExecutiveHeadline {
+  statement: string;
+  detail: string;
+  tone: "positive" | "caution" | "neutral";
+}
+
+export function getExecutiveHeadline(
+  submissions: Submission[]
+): ExecutiveHeadline {
+  const stats = getDashboardStats(submissions);
+
+  if (stats.openContradictions > 0 && stats.avgReadiness < 70) {
+    return {
+      statement: `${stats.openContradictions} open contradictions are holding back a ${stats.avgReadiness}% readiness portfolio.`,
+      detail: `Prioritize document reconciliation across ${formatCurrency(stats.activePremium)} in active premium before releasing additional quotes.`,
+      tone: "caution",
+    };
+  }
+
+  if (stats.openContradictions > 0) {
+    return {
+      statement: `Resolve ${stats.openContradictions} cross-document contradiction${stats.openContradictions !== 1 ? "s" : ""} to de-risk the pipeline.`,
+      detail: `${stats.inReview + stats.pendingInfo} files remain in review or pending info across ${formatCurrency(stats.activePremium)} of active premium.`,
+      tone: "caution",
+    };
+  }
+
+  if (stats.quoted > 0 && stats.quotedPremium > 0) {
+    return {
+      statement: `${formatCurrency(stats.quotedPremium)} is quoted and ready for bind consideration.`,
+      detail: `Portfolio readiness averages ${stats.avgReadiness}% with ${stats.quoteRate}% quote conversion across ${stats.total} submissions.`,
+      tone: "positive",
+    };
+  }
+
+  if (stats.pendingInfo > 0) {
+    return {
+      statement: `${stats.pendingInfo} submission${stats.pendingInfo !== 1 ? "s" : ""} awaiting broker documentation.`,
+      detail: `Closing outstanding items could unlock progress on ${formatCurrency(stats.activePremium)} of in-flight premium.`,
+      tone: "neutral",
+    };
+  }
+
+  return {
+    statement: `Portfolio is tracking at ${stats.avgReadiness}% average readiness across ${formatCurrency(stats.activePremium)} in active premium.`,
+    detail: `${stats.inReview} files in underwriting review · ${stats.quoted} quoted · ${stats.declined} declined this period.`,
+    tone: "neutral",
+  };
+}
