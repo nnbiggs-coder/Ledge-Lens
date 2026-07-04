@@ -59,6 +59,13 @@ Then open [http://localhost:3000](http://localhost:3000). The terminal must stay
 
 No database, authentication, or live AI in this phase.
 
-## Disclaimer
+## Deploy on Vercel
+
+1. Import the GitHub repo in [Vercel](https://vercel.com).
+2. **Root Directory** must be empty (`.`). Do **not** set it to `Ledge-Lens` or any subfolder.
+3. **Framework Preset** should be **Next.js** (auto-detected via `vercel.json`).
+4. Deploy from the `main` branch.
+
+Live URL: https://ledge-lens.vercel.app
 
 Independent concept prototype using fictional data. Not affiliated with Ledgebrook or any insurer, MGA or broker.
