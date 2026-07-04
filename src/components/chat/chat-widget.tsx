@@ -5,30 +5,39 @@ import { createPortal } from "react-dom";
 import {
   Bot,
   MessageCircle,
+  RotateCcw,
   Send,
   Sparkles,
   User,
   X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { useChat } from "@/components/chat/chat-provider";
 import { generateAssistantResponse } from "@/lib/chat-assistant";
 import { cn } from "@/lib/utils";
 import type { ChatMessage } from "@/types/chat";
 import { SUGGESTED_PROMPTS } from "@/types/chat";
 
-const WELCOME_MESSAGE: ChatMessage = {
-  id: "welcome",
-  role: "assistant",
-  content: `Hi — I'm **LedgeLens Assistant**, your underwriting co-pilot.
+function createWelcomeMessage(): ChatMessage {
+  return {
+    id: `welcome-${Date.now()}`,
+    role: "assistant",
+    content: `Hi — I'm **LedgeLens Assistant**, your underwriting co-pilot.
 
 Ask me about portfolio premium, submission readiness, contradictions, or any insured account in the pipeline.`,
-  timestamp: new Date(),
-};
+    timestamp: new Date(),
+  };
+}
 
 function createId() {
   return `msg-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+}
+
+function formatMessageTime(date: Date) {
+  return new Intl.DateTimeFormat("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+  }).format(date);
 }
 
 function renderMarkdownLite(text: string) {
@@ -52,14 +61,24 @@ function renderMarkdownLite(text: string) {
 
 export function ChatWidget() {
   const { open, setOpen, toggle } = useChat();
-  const [messages, setMessages] = useState<ChatMessage[]>([WELCOME_MESSAGE]);
+  const [messages, setMessages] = useState<ChatMessage[]>(() => [
+    createWelcomeMessage(),
+  ]);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const showSuggestions =
+    messages.length <= 1 && !isTyping;
 
   const scrollToBottom = useCallback(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, []);
+
+  const scrollToTop = useCallback(() => {
+    scrollRef.current?.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
   useEffect(() => {
@@ -69,6 +88,22 @@ export function ChatWidget() {
   useEffect(() => {
     if (open) inputRef.current?.focus();
   }, [open]);
+
+  useEffect(() => {
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape" && open) setOpen(false);
+    }
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [open, setOpen]);
+
+  const resetConversation = useCallback(() => {
+    if (isTyping) return;
+    setMessages([createWelcomeMessage()]);
+    setInput("");
+    scrollToTop();
+    inputRef.current?.focus();
+  }, [isTyping, scrollToTop]);
 
   const sendMessage = useCallback(
     async (text: string) => {
@@ -86,7 +121,7 @@ export function ChatWidget() {
       setInput("");
       setIsTyping(true);
 
-      await new Promise((r) => setTimeout(r, 600 + Math.random() * 400));
+      await new Promise((r) => setTimeout(r, 500 + Math.random() * 350));
 
       const response = generateAssistantResponse(trimmed);
       const assistantMsg: ChatMessage = {
@@ -118,145 +153,222 @@ export function ChatWidget() {
 
   return createPortal(
     <>
+      {/* Backdrop */}
+      <button
+        type="button"
+        aria-label="Close chat"
+        className={cn(
+          "fixed inset-0 z-[9998] bg-black/20 backdrop-blur-[2px] transition-opacity duration-300 sm:bg-black/10",
+          open ? "opacity-100" : "pointer-events-none opacity-0"
+        )}
+        onClick={() => setOpen(false)}
+      />
+
       {/* Chat panel */}
       <div
         className={cn(
-          "fixed z-[9999] flex flex-col overflow-hidden border border-border/60 bg-card shadow-2xl transition-all duration-300",
-          "inset-x-0 bottom-0 h-[min(85vh,640px)] rounded-t-2xl sm:inset-x-auto sm:right-6 sm:bottom-24 sm:h-[min(70vh,560px)] sm:w-[400px] sm:rounded-2xl",
+          "fixed z-[9999] flex flex-col overflow-hidden border border-border/50 bg-card shadow-2xl transition-all duration-300 ease-out",
+          "inset-x-0 bottom-0 h-[min(88vh,680px)] rounded-t-3xl sm:inset-x-auto sm:right-6 sm:bottom-24 sm:h-[min(72vh,600px)] sm:w-[420px] sm:rounded-2xl",
           open
             ? "translate-y-0 opacity-100"
-            : "pointer-events-none translate-y-4 opacity-0"
+            : "pointer-events-none translate-y-6 opacity-0"
         )}
         role="dialog"
         aria-label="LedgeLens Assistant chat"
         aria-hidden={!open}
       >
-        <div className="flex items-center gap-3 border-b border-border/60 bg-primary px-4 py-3 text-primary-foreground">
-          <div className="flex size-9 items-center justify-center rounded-xl bg-primary-foreground/15">
-            <Sparkles className="size-4" />
+        {/* Header */}
+        <div className="relative shrink-0 overflow-hidden border-b border-border/40 bg-gradient-to-r from-primary to-[oklch(0.48_0.11_220)] px-4 py-3.5 text-primary-foreground">
+          <div className="absolute -top-8 -right-8 size-32 rounded-full bg-white/10 blur-2xl" />
+          <div className="relative flex items-center gap-3">
+            <div className="flex size-10 items-center justify-center rounded-2xl bg-white/15 shadow-inner">
+              <Sparkles className="size-4" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-2">
+                <p className="font-semibold leading-tight">LedgeLens Assistant</p>
+                <span className="inline-flex items-center gap-1 rounded-full bg-white/15 px-2 py-0.5 text-[10px] font-medium">
+                  <span className="size-1.5 rounded-full bg-emerald-300" />
+                  Online
+                </span>
+              </div>
+              <p className="text-xs text-primary-foreground/75">
+                Portfolio Q&A · Prototype data
+              </p>
+            </div>
+            <div className="flex items-center gap-1">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 gap-1.5 rounded-lg px-2.5 text-xs text-primary-foreground hover:bg-white/15"
+                onClick={resetConversation}
+                disabled={isTyping}
+                aria-label="Reset conversation"
+              >
+                <RotateCcw className="size-3.5" />
+                <span className="hidden sm:inline">Reset</span>
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 gap-1.5 rounded-lg px-2.5 text-xs text-primary-foreground hover:bg-white/15"
+                onClick={() => setOpen(false)}
+                aria-label="Close chat"
+              >
+                <X className="size-3.5" />
+                <span className="hidden sm:inline">Close</span>
+              </Button>
+            </div>
           </div>
-          <div className="min-w-0 flex-1">
-            <p className="font-semibold leading-tight">LedgeLens Assistant</p>
-            <p className="text-xs text-primary-foreground/70">
-              Prototype · Fictional data
-            </p>
-          </div>
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            className="text-primary-foreground hover:bg-primary-foreground/15"
-            onClick={() => setOpen(false)}
-            aria-label="Close chat"
-          >
-            <X />
-          </Button>
         </div>
 
-        <ScrollArea className="flex-1 px-4 py-4">
-          <div className="space-y-4">
+        {/* Messages */}
+        <div
+          ref={scrollRef}
+          className="flex-1 overflow-y-auto overscroll-contain px-4 py-4"
+        >
+          <div className="space-y-5">
             {messages.map((msg) => (
               <div
                 key={msg.id}
                 className={cn(
-                  "flex gap-2.5",
+                  "flex gap-3",
                   msg.role === "user" ? "flex-row-reverse" : "flex-row"
                 )}
               >
                 <div
                   className={cn(
-                    "flex size-7 shrink-0 items-center justify-center rounded-full",
+                    "flex size-8 shrink-0 items-center justify-center rounded-full shadow-sm",
                     msg.role === "user"
                       ? "bg-primary text-primary-foreground"
-                      : "bg-muted text-muted-foreground"
+                      : "border border-border/50 bg-background text-muted-foreground"
                   )}
                 >
                   {msg.role === "user" ? (
-                    <User className="size-3.5" />
+                    <User className="size-4" />
                   ) : (
-                    <Bot className="size-3.5" />
+                    <Bot className="size-4" />
                   )}
                 </div>
                 <div
                   className={cn(
-                    "max-w-[85%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed",
-                    msg.role === "user"
-                      ? "rounded-tr-sm bg-primary text-primary-foreground"
-                      : "rounded-tl-sm bg-muted/60 text-foreground"
+                    "flex max-w-[82%] flex-col gap-1",
+                    msg.role === "user" ? "items-end" : "items-start"
                   )}
                 >
-                  {renderMarkdownLite(msg.content)}
+                  <div
+                    className={cn(
+                      "rounded-2xl px-4 py-2.5 text-sm leading-relaxed shadow-sm",
+                      msg.role === "user"
+                        ? "rounded-tr-md bg-primary text-primary-foreground"
+                        : "rounded-tl-md border border-border/40 bg-muted/40 text-foreground"
+                    )}
+                  >
+                    {renderMarkdownLite(msg.content)}
+                  </div>
+                  <span className="px-1 text-[10px] text-muted-foreground">
+                    {formatMessageTime(msg.timestamp)}
+                  </span>
                 </div>
               </div>
             ))}
 
             {isTyping ? (
-              <div className="flex gap-2.5">
-                <div className="flex size-7 items-center justify-center rounded-full bg-muted text-muted-foreground">
-                  <Bot className="size-3.5" />
+              <div className="flex gap-3">
+                <div className="flex size-8 items-center justify-center rounded-full border border-border/50 bg-background text-muted-foreground shadow-sm">
+                  <Bot className="size-4" />
                 </div>
-                <div className="flex items-center gap-1 rounded-2xl rounded-tl-sm bg-muted/60 px-4 py-3">
-                  <span className="size-1.5 animate-bounce rounded-full bg-muted-foreground/60 [animation-delay:0ms]" />
-                  <span className="size-1.5 animate-bounce rounded-full bg-muted-foreground/60 [animation-delay:150ms]" />
-                  <span className="size-1.5 animate-bounce rounded-full bg-muted-foreground/60 [animation-delay:300ms]" />
+                <div className="flex items-center gap-1.5 rounded-2xl rounded-tl-md border border-border/40 bg-muted/40 px-4 py-3 shadow-sm">
+                  <span className="size-2 animate-bounce rounded-full bg-primary/40 [animation-delay:0ms]" />
+                  <span className="size-2 animate-bounce rounded-full bg-primary/40 [animation-delay:150ms]" />
+                  <span className="size-2 animate-bounce rounded-full bg-primary/40 [animation-delay:300ms]" />
                 </div>
               </div>
             ) : null}
 
             <div ref={bottomRef} />
           </div>
-        </ScrollArea>
+        </div>
 
-        {messages.length <= 1 && !isTyping ? (
-          <div className="flex flex-wrap gap-2 border-t border-border/40 px-4 py-2">
-            {SUGGESTED_PROMPTS.slice(0, 3).map((prompt) => (
-              <button
-                key={prompt}
-                type="button"
-                onClick={() => sendMessage(prompt)}
-                className="rounded-full border border-border/60 bg-background px-3 py-1 text-xs text-muted-foreground transition-colors hover:border-primary/30 hover:bg-primary/5 hover:text-foreground"
-              >
-                {prompt}
-              </button>
-            ))}
+        {/* Suggested prompts */}
+        {showSuggestions ? (
+          <div className="shrink-0 border-t border-border/40 bg-muted/20 px-4 py-3">
+            <p className="mb-2 text-xs font-medium text-muted-foreground">
+              Try asking
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {SUGGESTED_PROMPTS.map((prompt) => (
+                <button
+                  key={prompt}
+                  type="button"
+                  onClick={() => sendMessage(prompt)}
+                  className="rounded-full border border-border/60 bg-background px-3 py-1.5 text-left text-xs text-foreground/80 shadow-sm transition-all hover:border-primary/40 hover:bg-primary/5 hover:text-foreground hover:shadow"
+                >
+                  {prompt}
+                </button>
+              ))}
+            </div>
           </div>
-        ) : null}
+        ) : (
+          <div className="flex shrink-0 items-center justify-between border-t border-border/40 bg-muted/20 px-4 py-2">
+            <p className="text-xs text-muted-foreground">
+              {messages.length - 1} message{messages.length - 1 !== 1 ? "s" : ""}{" "}
+              in this conversation
+            </p>
+            <button
+              type="button"
+              onClick={resetConversation}
+              disabled={isTyping}
+              className="text-xs font-medium text-primary hover:underline disabled:opacity-50"
+            >
+              Start new chat
+            </button>
+          </div>
+        )}
 
+        {/* Input */}
         <form
           onSubmit={handleSubmit}
-          className="flex items-end gap-2 border-t border-border/60 p-3"
+          className="shrink-0 border-t border-border/60 bg-background p-3"
         >
-          <textarea
-            ref={inputRef}
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="Ask about the portfolio…"
-            rows={1}
-            className="max-h-24 min-h-9 flex-1 resize-none rounded-xl border border-input bg-background px-3 py-2 text-sm outline-none ring-ring/50 placeholder:text-muted-foreground focus-visible:ring-[3px]"
-            aria-label="Chat message"
-          />
-          <Button
-            type="submit"
-            size="icon"
-            disabled={!input.trim() || isTyping}
-            className="shrink-0 rounded-xl"
-            aria-label="Send message"
-          >
-            <Send />
-          </Button>
+          <div className="flex items-end gap-2">
+            <div className="relative flex-1">
+              <textarea
+                ref={inputRef}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="Ask about premium, readiness, contradictions…"
+                rows={1}
+                className="max-h-28 min-h-10 w-full resize-none rounded-xl border border-input bg-muted/30 px-3.5 py-2.5 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-primary/40 focus:bg-background focus:ring-[3px] focus:ring-primary/15"
+                aria-label="Chat message"
+              />
+              <p className="mt-1.5 hidden text-[10px] text-muted-foreground sm:block">
+                Press Enter to send · Shift+Enter for new line · Esc to close
+              </p>
+            </div>
+            <Button
+              type="submit"
+              size="icon"
+              disabled={!input.trim() || isTyping}
+              className="size-10 shrink-0 rounded-xl shadow-sm"
+              aria-label="Send message"
+            >
+              <Send className="size-4" />
+            </Button>
+          </div>
         </form>
       </div>
 
-      {/* FAB — always on top */}
+      {/* FAB */}
       {!open ? (
         <Button
           onClick={toggle}
           size="icon-lg"
-          className="fixed right-4 bottom-4 z-[9999] size-14 animate-pulse rounded-full shadow-xl ring-4 ring-primary/20 hover:animate-none hover:scale-105 sm:right-6 sm:bottom-6"
+          className="fixed right-4 bottom-4 z-[9999] size-14 rounded-full bg-gradient-to-br from-primary to-[oklch(0.48_0.11_220)] shadow-xl ring-4 ring-primary/25 transition-transform hover:scale-105 sm:right-6 sm:bottom-6"
           aria-label="Open LedgeLens Assistant"
         >
           <MessageCircle className="size-6" />
-          <span className="sr-only">Open chat assistant</span>
         </Button>
       ) : null}
     </>,
