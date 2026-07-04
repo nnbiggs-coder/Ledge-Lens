@@ -1,5 +1,6 @@
 import { DisclaimerBanner } from "@/components/layout/disclaimer-banner";
 import { AppSidebar } from "@/components/layout/app-sidebar";
+import { ChatWidget } from "@/components/chat/chat-widget";
 import {
   SidebarInset,
   SidebarProvider,
@@ -41,6 +42,7 @@ export function AppShell({ children }: AppShellProps) {
         <main className="flex-1 overflow-auto">
           <div className="page-container">{children}</div>
         </main>
+        <ChatWidget />
       </SidebarInset>
     </SidebarProvider>
   );
