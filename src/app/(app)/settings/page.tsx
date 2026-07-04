@@ -1,10 +1,5 @@
-import { ComingSoon } from "@/components/placeholder/coming-soon";
+import { SettingsContent } from "@/components/settings/settings-content";
 
 export default function SettingsPage() {
-  return (
-    <ComingSoon
-      title="Settings"
-      description="Workbench preferences and team configuration"
-    />
-  );
+  return <SettingsContent />;
 }

@@ -58,11 +58,12 @@ export function RecentSubmissions({ submissions }: RecentSubmissionsProps) {
       <CardContent>
         {/* Mobile card list */}
         <div className="space-y-3 md:hidden">
-          {recent.map((submission) => (
-            <div
-              key={submission.id}
-              className="rounded-xl border border-border/60 bg-muted/30 p-4"
-            >
+              {recent.map((submission) => (
+                <Link
+                  key={submission.id}
+                  href={`/submissions/${submission.id}`}
+                  className="block rounded-xl border border-border/60 bg-muted/30 p-4 transition-colors hover:bg-muted/50"
+                >
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0">
                   <p className="truncate font-medium">{submission.insuredName}</p>
@@ -86,8 +87,8 @@ export function RecentSubmissions({ submissions }: RecentSubmissionsProps) {
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
+                </Link>
+              ))}
         </div>
 
         {/* Desktop table */}
@@ -108,10 +109,14 @@ export function RecentSubmissions({ submissions }: RecentSubmissionsProps) {
               {recent.map((submission) => (
                 <TableRow key={submission.id} className="hover:bg-muted/40">
                   <TableCell className="font-mono text-sm">
-                    {submission.referenceNumber}
+                    <Link href={`/submissions/${submission.id}`} className="hover:underline">
+                      {submission.referenceNumber}
+                    </Link>
                   </TableCell>
                   <TableCell className="font-medium">
-                    {submission.insuredName}
+                    <Link href={`/submissions/${submission.id}`} className="hover:underline">
+                      {submission.insuredName}
+                    </Link>
                   </TableCell>
                   <TableCell className="text-muted-foreground">
                     {lineOfBusinessLabels[submission.lineOfBusiness]}

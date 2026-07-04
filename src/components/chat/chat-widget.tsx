@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useChat } from "@/components/chat/chat-provider";
+import { useDemo } from "@/context/demo-provider";
 import { generateAssistantResponse } from "@/lib/chat-assistant";
 import { cn } from "@/lib/utils";
 import type { ChatMessage } from "@/types/chat";
@@ -61,6 +62,7 @@ function renderMarkdownLite(text: string) {
 
 export function ChatWidget() {
   const { open, setOpen, toggle } = useChat();
+  const { state } = useDemo();
   const [messages, setMessages] = useState<ChatMessage[]>(() => [
     createWelcomeMessage(),
   ]);
@@ -123,7 +125,7 @@ export function ChatWidget() {
 
       await new Promise((r) => setTimeout(r, 500 + Math.random() * 350));
 
-      const response = generateAssistantResponse(trimmed);
+      const response = generateAssistantResponse(trimmed, state.submissions);
       const assistantMsg: ChatMessage = {
         id: createId(),
         role: "assistant",
@@ -134,7 +136,7 @@ export function ChatWidget() {
       setMessages((prev) => [...prev, assistantMsg]);
       setIsTyping(false);
     },
-    [isTyping]
+    [isTyping, state.submissions]
   );
 
   function handleSubmit(e: React.FormEvent) {

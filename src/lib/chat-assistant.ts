@@ -1,4 +1,3 @@
-import { submissions } from "@/data/seed";
 import {
   formatCurrency,
   getDashboardStats,
@@ -22,7 +21,7 @@ function summarizeSubmission(s: Submission): string {
   if (s.contradictions.length > 0) {
     const top = s.contradictions.find((c) => c.status === "open");
     if (top) {
-      summary += `\n\n⚠️ **Key issue:** ${top.description}`;
+      summary += `\n\n⚠️ **Key issue:** ${top.fieldName} — ${top.explanation}`;
     }
   }
 
@@ -33,7 +32,10 @@ function summarizeSubmission(s: Submission): string {
   return summary;
 }
 
-export function generateAssistantResponse(input: string): string {
+export function generateAssistantResponse(
+  input: string,
+  submissions: Submission[]
+): string {
   const q = input.trim().toLowerCase();
   const stats = getDashboardStats(submissions);
 
@@ -55,7 +57,7 @@ I can help with:
 • Open contradictions & missing items
 • Pipeline status breakdown
 
-Try: *"What's our active pipeline premium?"* or *"Summarize Prairie Oak Retail"*`;
+Try: *"What's our active pipeline premium?"* or *"Summarize Harbor Street Social"*`;
   }
 
   if (
@@ -94,7 +96,7 @@ Active (non-declined) exposure: **${formatCurrency(stats.activePremium)}**.`;
     let response = `**${stats.openContradictions} open contradiction(s)** across ${withIssues.length} file(s):\n\n`;
     for (const s of withIssues) {
       for (const c of s.contradictions.filter((x) => x.status === "open")) {
-        response += `• **${s.insuredName}** — ${c.description} (${c.severity})\n`;
+        response += `• **${s.insuredName}** — ${c.fieldName}: ${c.explanation} (${c.severity})\n`;
       }
     }
     response +=
@@ -170,7 +172,7 @@ ${submissions
     let response = `**Pending documents** across ${withMissing.length} file(s):\n\n`;
     for (const s of withMissing) {
       for (const m of s.missingItems.filter((x) => x.status !== "received")) {
-        response += `• **${s.insuredName}** — ${m.description} (${m.priority} priority)\n`;
+        response += `• **${s.insuredName}** — ${m.fieldName}: ${m.reasonRequired} (${m.severity})\n`;
       }
     }
     return response;
@@ -178,11 +180,12 @@ ${submissions
 
   if (q.includes("summarize") || q.includes("summary") || q.includes("tell me about")) {
     const names = [
-      "harborview",
-      "prairie oak",
-      "atlas",
-      "redwood",
-      "greenfield",
+      "harbor street",
+      "harbor",
+      "clean office",
+      "contractor",
+      "nightlife",
+      "low confidence",
     ];
     for (const name of names) {
       if (q.includes(name)) {
@@ -194,7 +197,6 @@ ${submissions
     }
   }
 
-  // Try matching by insured name or reference
   for (const s of submissions) {
     const firstWord = s.insuredName.split(" ")[0].toLowerCase();
     if (
@@ -219,7 +221,7 @@ ${submissions
   return `I couldn't find a specific match for that question. Try asking about:
 
 • Pipeline premium or quote rate
-• A specific insured (e.g. "Harborview" or "Prairie Oak")
+• A specific insured (e.g. "Harbor Street Social")
 • Open contradictions or missing documents
 • Readiness scores or quoted submissions
 

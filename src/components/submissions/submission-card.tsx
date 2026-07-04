@@ -1,4 +1,5 @@
 import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
 import { SubmissionStatusBadge } from "@/components/submissions/submission-status-badge";
 import { ReadinessBadge } from "@/components/submissions/readiness-badge";
 import {
@@ -22,6 +23,7 @@ export function SubmissionCard({ submission }: SubmissionCardProps) {
   ).length;
 
   return (
+    <Link href={`/submissions/${submission.id}`} className="block">
     <article className="rounded-xl border border-border/60 bg-card p-4 shadow-sm transition-shadow hover:shadow-md">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
@@ -76,5 +78,6 @@ export function SubmissionCard({ submission }: SubmissionCardProps) {
         ) : null}
       </div>
     </article>
+    </Link>
   );
 }

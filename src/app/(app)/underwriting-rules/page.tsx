@@ -1,10 +1,5 @@
-import { ComingSoon } from "@/components/placeholder/coming-soon";
+import { UnderwritingRulesContent } from "@/components/underwriting-rules/underwriting-rules-content";
 
 export default function UnderwritingRulesPage() {
-  return (
-    <ComingSoon
-      title="Underwriting Rules"
-      description="Configurable rules engine for automated submission triage"
-    />
-  );
+  return <UnderwritingRulesContent />;
 }

@@ -1,10 +1,5 @@
-import { ComingSoon } from "@/components/placeholder/coming-soon";
+import { AnalyticsContent } from "@/components/analytics/analytics-content";
 
 export default function AnalyticsPage() {
-  return (
-    <ComingSoon
-      title="Analytics"
-      description="Portfolio analytics and underwriting performance metrics"
-    />
-  );
+  return <AnalyticsContent />;
 }

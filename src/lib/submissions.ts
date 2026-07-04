@@ -32,6 +32,7 @@ export const lineOfBusinessLabels: Record<LineOfBusiness, string> = {
   workers_comp: "Workers' Comp",
   professional_liability: "Professional Liability",
   excess_casualty: "Excess Casualty",
+  restaurant_entertainment: "Restaurant & Entertainment",
 };
 
 export const submissionStatusLabels: Record<SubmissionStatus, string> = {

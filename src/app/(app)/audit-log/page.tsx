@@ -1,10 +1,5 @@
-import { ComingSoon } from "@/components/placeholder/coming-soon";
+import { AuditLogContent } from "@/components/audit/audit-log-content";
 
 export default function AuditLogPage() {
-  return (
-    <ComingSoon
-      title="Audit Log"
-      description="Immutable record of underwriting decisions and system events"
-    />
-  );
+  return <AuditLogContent />;
 }

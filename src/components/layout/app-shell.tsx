@@ -1,8 +1,10 @@
 "use client";
 
 import { DisclaimerBanner } from "@/components/layout/disclaimer-banner";
+import { AppFooter } from "@/components/layout/disclaimers";
 import { AppSidebar } from "@/components/layout/app-sidebar";
 import { ChatProvider } from "@/components/chat/chat-provider";
+import { DemoProvider } from "@/context/demo-provider";
 import dynamic from "next/dynamic";
 
 const ChatWidget = dynamic(
@@ -24,6 +26,7 @@ interface AppShellProps {
 
 export function AppShell({ children }: AppShellProps) {
   return (
+    <DemoProvider>
     <ChatProvider>
       <SidebarProvider>
         <AppSidebar />
@@ -50,11 +53,13 @@ export function AppShell({ children }: AppShellProps) {
           </div>
         </header>
         <main className="flex-1 overflow-auto">
-          <div className="page-container">{children}</div>
+          <div className="page-container flex min-h-full flex-col">{children}</div>
         </main>
+        <AppFooter />
         <ChatWidget />
       </SidebarInset>
     </SidebarProvider>
     </ChatProvider>
+    </DemoProvider>
   );
 }

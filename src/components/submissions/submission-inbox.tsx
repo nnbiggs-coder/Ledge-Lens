@@ -32,6 +32,7 @@ import type { Submission, SubmissionStatus } from "@/types";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 interface SubmissionInboxProps {
   submissions: Submission[];
@@ -142,6 +143,7 @@ export function SubmissionInbox({ submissions }: SubmissionInboxProps) {
                     <TableHead className="text-right">Premium</TableHead>
                     <TableHead className="text-right">Readiness</TableHead>
                     <TableHead className="text-right">Submitted</TableHead>
+                    <TableHead className="text-right">Action</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -156,13 +158,17 @@ export function SubmissionInbox({ submissions }: SubmissionInboxProps) {
                     return (
                       <TableRow
                         key={submission.id}
-                        className="hover:bg-muted/30"
+                        className="cursor-pointer hover:bg-muted/30"
                       >
                         <TableCell className="font-mono text-sm">
-                          {submission.referenceNumber}
+                          <Link href={`/submissions/${submission.id}`} className="hover:underline">
+                            {submission.referenceNumber}
+                          </Link>
                         </TableCell>
                         <TableCell className="max-w-[180px] truncate font-medium">
-                          {submission.insuredName}
+                          <Link href={`/submissions/${submission.id}`} className="hover:underline">
+                            {submission.insuredName}
+                          </Link>
                         </TableCell>
                         <TableCell>
                           <div className="flex flex-col">
@@ -209,6 +215,13 @@ export function SubmissionInbox({ submissions }: SubmissionInboxProps) {
                         </TableCell>
                         <TableCell className="text-right text-muted-foreground">
                           {formatDate(submission.submittedAt)}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <Link href={`/submissions/${submission.id}`}>
+                            <Button variant="ghost" size="sm" className="h-7 text-xs">
+                              Open
+                            </Button>
+                          </Link>
                         </TableCell>
                       </TableRow>
                     );
