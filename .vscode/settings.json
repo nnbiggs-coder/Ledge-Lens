@@ -1,0 +1,10 @@
+{
+  "remote.autoForwardPorts": true,
+  "remote.autoForwardPortsSource": "output",
+  "remote.portsAttributes": {
+    "3000": {
+      "label": "LedgeLens",
+      "onAutoForward": "notify"
+    }
+  }
+}

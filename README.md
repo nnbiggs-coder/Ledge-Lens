@@ -18,7 +18,36 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to view the application.
+### Viewing the app
+
+**If you use Cursor's integrated terminal (remote/cloud workspace):**
+
+`localhost:3000` in your browser points at **your computer**, not the machine where `npm run dev` is running. The dev server can be up and still show `ERR_CONNECTION_REFUSED` in Chrome.
+
+1. Keep `npm run dev` running until you see `✓ Ready`.
+2. Open the **Ports** panel in Cursor (bottom panel → **Ports**, or Command Palette → “Ports: Focus on Ports View”).
+3. Confirm port **3000** is listed. If not, click **Forward a Port** and enter `3000`.
+4. Click the **Open in Browser** icon next to port 3000 (globe/link), or use the forwarded URL Cursor shows — not plain `http://localhost:3000` unless that port is explicitly forwarded.
+
+**If you cloned the repo and run on your own machine:**
+
+```bash
+cd Ledge-Lens
+git checkout cursor/phase-1-ledge-lens-dcbb
+npm install
+npm run dev
+```
+
+Then open [http://localhost:3000](http://localhost:3000). The terminal must stay open and show `✓ Ready`.
+
+### Troubleshooting `ERR_CONNECTION_REFUSED`
+
+| Check | What to do |
+|-------|------------|
+| Terminal closed or `npm run dev` stopped | Start it again and leave the terminal open |
+| No `✓ Ready` message | Read the error above it (often `npm install` was skipped) |
+| Remote Cursor terminal | Use the **Ports** panel forwarded URL, not local `localhost` |
+| Port 3000 in use | Run `npm run dev -- -p 3001` and open `http://localhost:3001` |
 
 ## Phase 1 Scope
 
