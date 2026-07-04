@@ -23,6 +23,7 @@
 # misc
 .DS_Store
 *.pem
+/Ledge-Lens
 
 # debug
 npm-debug.log*

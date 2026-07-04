@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import {
   Card,
@@ -38,62 +40,99 @@ export function RecentSubmissions({ submissions }: RecentSubmissionsProps) {
     .slice(0, 5);
 
   return (
-    <Card className="col-span-full">
-      <CardHeader className="flex flex-row items-center justify-between">
+    <Card className="glass-card col-span-full">
+      <CardHeader className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <CardTitle>Recent Submissions</CardTitle>
+          <CardTitle>Recent Activity</CardTitle>
           <CardDescription>
-            Latest activity across the underwriting portfolio
+            Latest updates across the underwriting portfolio
           </CardDescription>
         </div>
         <Link href="/submissions">
-          <Button variant="outline" size="sm">
-            View inbox
+          <Button variant="outline" size="sm" className="w-full sm:w-auto">
+            View all submissions
             <ArrowRight />
           </Button>
         </Link>
       </CardHeader>
       <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Reference</TableHead>
-              <TableHead>Insured</TableHead>
-              <TableHead>Line</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Premium</TableHead>
-              <TableHead className="text-right">Readiness</TableHead>
-              <TableHead className="text-right">Updated</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {recent.map((submission) => (
-              <TableRow key={submission.id}>
-                <TableCell className="font-mono text-sm">
-                  {submission.referenceNumber}
-                </TableCell>
-                <TableCell className="font-medium">
-                  {submission.insuredName}
-                </TableCell>
-                <TableCell className="text-muted-foreground">
-                  {lineOfBusinessLabels[submission.lineOfBusiness]}
-                </TableCell>
-                <TableCell>
-                  <SubmissionStatusBadge status={submission.status} />
-                </TableCell>
-                <TableCell className="text-right tabular-nums">
-                  {formatCurrency(submission.premiumEstimate)}
-                </TableCell>
-                <TableCell className="text-right">
-                  <ReadinessBadge score={submission.readiness.overall} />
-                </TableCell>
-                <TableCell className="text-right text-muted-foreground">
-                  {formatDate(submission.updatedAt)}
-                </TableCell>
+        {/* Mobile card list */}
+        <div className="space-y-3 md:hidden">
+          {recent.map((submission) => (
+            <div
+              key={submission.id}
+              className="rounded-xl border border-border/60 bg-muted/30 p-4"
+            >
+              <div className="flex items-start justify-between gap-2">
+                <div className="min-w-0">
+                  <p className="truncate font-medium">{submission.insuredName}</p>
+                  <p className="font-mono text-xs text-muted-foreground">
+                    {submission.referenceNumber}
+                  </p>
+                </div>
+                <SubmissionStatusBadge status={submission.status} />
+              </div>
+              <div className="mt-3 grid grid-cols-2 gap-2 text-sm">
+                <div>
+                  <p className="text-xs text-muted-foreground">Premium</p>
+                  <p className="font-semibold tabular-nums">
+                    {formatCurrency(submission.premiumEstimate)}
+                  </p>
+                </div>
+                <div className="text-right">
+                  <p className="text-xs text-muted-foreground">Readiness</p>
+                  <div className="mt-0.5 flex justify-end">
+                    <ReadinessBadge score={submission.readiness.overall} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Desktop table */}
+        <div className="hidden overflow-x-auto md:block">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Reference</TableHead>
+                <TableHead>Insured</TableHead>
+                <TableHead>Line</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead className="text-right">Premium</TableHead>
+                <TableHead className="text-right">Readiness</TableHead>
+                <TableHead className="text-right">Updated</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {recent.map((submission) => (
+                <TableRow key={submission.id} className="hover:bg-muted/40">
+                  <TableCell className="font-mono text-sm">
+                    {submission.referenceNumber}
+                  </TableCell>
+                  <TableCell className="font-medium">
+                    {submission.insuredName}
+                  </TableCell>
+                  <TableCell className="text-muted-foreground">
+                    {lineOfBusinessLabels[submission.lineOfBusiness]}
+                  </TableCell>
+                  <TableCell>
+                    <SubmissionStatusBadge status={submission.status} />
+                  </TableCell>
+                  <TableCell className="text-right font-semibold tabular-nums">
+                    {formatCurrency(submission.premiumEstimate)}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <ReadinessBadge score={submission.readiness.overall} />
+                  </TableCell>
+                  <TableCell className="text-right text-muted-foreground">
+                    {formatDate(submission.updatedAt)}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       </CardContent>
     </Card>
   );

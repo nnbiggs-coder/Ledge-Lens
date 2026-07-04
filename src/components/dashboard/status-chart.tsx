@@ -44,22 +44,22 @@ export function StatusChart({ submissions }: StatusChartProps) {
   }));
 
   return (
-    <Card>
+    <Card className="glass-card">
       <CardHeader>
-        <CardTitle>Status Distribution</CardTitle>
-        <CardDescription>Current pipeline breakdown by submission status</CardDescription>
+        <CardTitle>Pipeline Status</CardTitle>
+        <CardDescription>Current distribution by underwriting stage</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="h-[280px] w-full">
+        <div className="h-[240px] w-full sm:h-[280px]">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
                 data={data}
                 cx="50%"
-                cy="50%"
-                innerRadius={60}
-                outerRadius={90}
-                paddingAngle={3}
+                cy="45%"
+                innerRadius={55}
+                outerRadius={85}
+                paddingAngle={4}
                 dataKey="value"
                 nameKey="name"
               >
@@ -67,6 +67,7 @@ export function StatusChart({ submissions }: StatusChartProps) {
                   <Cell
                     key={entry.status}
                     fill={STATUS_COLORS[entry.status]}
+                    stroke="transparent"
                   />
                 ))}
               </Pie>
@@ -75,10 +76,10 @@ export function StatusChart({ submissions }: StatusChartProps) {
                   if (!active || !payload?.length) return null;
                   const item = payload[0];
                   return (
-                    <div className="rounded-lg border border-border bg-background px-3 py-2 text-sm shadow-md">
+                    <div className="rounded-xl border border-border bg-card px-3 py-2 text-sm shadow-lg">
                       <p className="font-medium">{item.name}</p>
                       <p className="text-muted-foreground">
-                        {item.value} submission{item.value !== 1 ? "s" : ""}
+                        {item.value} file{item.value !== 1 ? "s" : ""}
                       </p>
                     </div>
                   );
@@ -86,7 +87,7 @@ export function StatusChart({ submissions }: StatusChartProps) {
               />
               <Legend
                 verticalAlign="bottom"
-                height={36}
+                height={40}
                 formatter={(value) => (
                   <span className="text-xs text-muted-foreground">{value}</span>
                 )}

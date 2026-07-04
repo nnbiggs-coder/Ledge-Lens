@@ -88,13 +88,57 @@ export function getDashboardStats(submissions: Submission[]) {
     (s) => s.status === "pending_info"
   ).length;
   const quoted = submissions.filter((s) => s.status === "quoted").length;
+  const declined = submissions.filter((s) => s.status === "declined").length;
+
+  const totalPipelinePremium = submissions.reduce(
+    (sum, s) => sum + s.premiumEstimate,
+    0
+  );
+  const quotedPremium = submissions
+    .filter((s) => s.status === "quoted")
+    .reduce((sum, s) => sum + s.premiumEstimate, 0);
+  const activePremium = submissions
+    .filter((s) => !["declined", "bound"].includes(s.status))
+    .reduce((sum, s) => sum + s.premiumEstimate, 0);
+  const avgDealSize =
+    submissions.length > 0
+      ? Math.round(totalPipelinePremium / submissions.length)
+      : 0;
+  const quoteRate =
+    submissions.length > 0
+      ? Math.round((quoted / submissions.length) * 100)
+      : 0;
 
   return {
     total: submissions.length,
     inReview,
     pendingInfo,
     quoted,
+    declined,
     openContradictions: countOpenContradictions(submissions),
     avgReadiness: averageReadiness(submissions),
+    totalPipelinePremium,
+    quotedPremium,
+    activePremium,
+    avgDealSize,
+    quoteRate,
   };
+}
+
+export function getPremiumByLineOfBusiness(submissions: Submission[]) {
+  const totals = new Map<LineOfBusiness, number>();
+
+  for (const submission of submissions) {
+    const current = totals.get(submission.lineOfBusiness) ?? 0;
+    totals.set(
+      submission.lineOfBusiness,
+      current + submission.premiumEstimate
+    );
+  }
+
+  return Array.from(totals.entries()).map(([lob, premium]) => ({
+    line: lineOfBusinessLabels[lob],
+    premium,
+    shortLine: lineOfBusinessLabels[lob].replace("Commercial ", "C. "),
+  }));
 }

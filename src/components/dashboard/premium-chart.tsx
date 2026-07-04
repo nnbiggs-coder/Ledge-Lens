@@ -4,6 +4,7 @@ import {
   Bar,
   BarChart,
   CartesianGrid,
+  Cell,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -16,53 +17,59 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { lineOfBusinessLabels } from "@/lib/submissions";
+import { formatCurrency, getPremiumByLineOfBusiness } from "@/lib/submissions";
 import type { Submission } from "@/types";
 
-interface ReadinessChartProps {
+const COLORS = [
+  "var(--chart-2)",
+  "var(--chart-3)",
+  "var(--chart-1)",
+  "var(--chart-4)",
+  "var(--chart-5)",
+];
+
+interface PremiumChartProps {
   submissions: Submission[];
 }
 
-export function ReadinessChart({ submissions }: ReadinessChartProps) {
-  const data = submissions.map((s) => ({
-    name: s.referenceNumber.replace("LL-2026-", ""),
-    readiness: s.readiness.overall,
-    insured: s.insuredName.split(" ")[0],
-    lob: lineOfBusinessLabels[s.lineOfBusiness],
-  }));
+export function PremiumChart({ submissions }: PremiumChartProps) {
+  const data = getPremiumByLineOfBusiness(submissions);
 
   return (
-    <Card className="glass-card">
+    <Card className="glass-card col-span-full lg:col-span-2">
       <CardHeader>
-        <CardTitle>Underwriting Readiness</CardTitle>
+        <CardTitle>Premium by Line of Business</CardTitle>
         <CardDescription>
-          Submission readiness scores — target 80%+ before quote release
+          Estimated premium distribution across the active portfolio
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="h-[240px] w-full sm:h-[280px]">
+        <div className="h-[260px] w-full sm:h-[280px]">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
               data={data}
-              margin={{ top: 8, right: 8, left: -20, bottom: 0 }}
+              layout="vertical"
+              margin={{ top: 4, right: 12, left: 4, bottom: 4 }}
             >
               <CartesianGrid
                 strokeDasharray="3 3"
-                vertical={false}
+                horizontal={false}
                 className="stroke-border/60"
               />
               <XAxis
-                dataKey="name"
+                type="number"
                 tick={{ fontSize: 11 }}
                 tickLine={false}
                 axisLine={false}
+                tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`}
               />
               <YAxis
-                domain={[0, 100]}
+                type="category"
+                dataKey="shortLine"
+                width={90}
                 tick={{ fontSize: 11 }}
                 tickLine={false}
                 axisLine={false}
-                tickFormatter={(v) => `${v}%`}
               />
               <Tooltip
                 content={({ active, payload }) => {
@@ -70,21 +77,19 @@ export function ReadinessChart({ submissions }: ReadinessChartProps) {
                   const item = payload[0].payload;
                   return (
                     <div className="rounded-xl border border-border bg-card px-3 py-2 text-sm shadow-lg">
-                      <p className="font-medium">{item.insured}</p>
-                      <p className="text-muted-foreground">{item.lob}</p>
+                      <p className="font-medium">{item.line}</p>
                       <p className="mt-1 font-mono tabular-nums text-primary">
-                        {item.readiness}% ready
+                        {formatCurrency(item.premium)}
                       </p>
                     </div>
                   );
                 }}
               />
-              <Bar
-                dataKey="readiness"
-                fill="var(--chart-2)"
-                radius={[6, 6, 0, 0]}
-                name="Readiness"
-              />
+              <Bar dataKey="premium" radius={[0, 6, 6, 0]} barSize={22}>
+                {data.map((_, index) => (
+                  <Cell key={index} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Bar>
             </BarChart>
           </ResponsiveContainer>
         </div>

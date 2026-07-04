@@ -10,7 +10,7 @@ import {
   BarChart3,
   ScrollText,
   Settings,
-  Shield,
+  Layers,
 } from "lucide-react";
 import {
   Sidebar,
@@ -26,41 +26,23 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 
-const navItems = [
+const navGroups = [
   {
-    title: "Dashboard",
-    href: "/",
-    icon: LayoutDashboard,
+    label: "Workbench",
+    items: [
+      { title: "Dashboard", href: "/", icon: LayoutDashboard },
+      { title: "Submissions", href: "/submissions", icon: Inbox },
+      { title: "New Submission", href: "/submissions/new", icon: FilePlus2 },
+    ],
   },
   {
-    title: "Submissions",
-    href: "/submissions",
-    icon: Inbox,
-  },
-  {
-    title: "New Submission",
-    href: "/submissions/new",
-    icon: FilePlus2,
-  },
-  {
-    title: "Underwriting Rules",
-    href: "/underwriting-rules",
-    icon: Scale,
-  },
-  {
-    title: "Analytics",
-    href: "/analytics",
-    icon: BarChart3,
-  },
-  {
-    title: "Audit Log",
-    href: "/audit-log",
-    icon: ScrollText,
-  },
-  {
-    title: "Settings",
-    href: "/settings",
-    icon: Settings,
+    label: "Governance",
+    items: [
+      { title: "Underwriting Rules", href: "/underwriting-rules", icon: Scale },
+      { title: "Analytics", href: "/analytics", icon: BarChart3 },
+      { title: "Audit Log", href: "/audit-log", icon: ScrollText },
+      { title: "Settings", href: "/settings", icon: Settings },
+    ],
   },
 ];
 
@@ -74,17 +56,23 @@ export function AppSidebar() {
   }
 
   return (
-    <Sidebar collapsible="icon">
-      <SidebarHeader className="border-b border-sidebar-border">
+    <Sidebar collapsible="icon" className="border-r-0">
+      <SidebarHeader className="border-b border-sidebar-border px-3 py-4">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton size="lg" render={<Link href="/" />}>
-              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                <Shield className="size-4" />
+            <SidebarMenuButton
+              size="lg"
+              className="hover:bg-sidebar-accent/80"
+              render={<Link href="/" />}
+            >
+              <div className="flex aspect-square size-9 items-center justify-center rounded-xl bg-sidebar-primary text-sidebar-primary-foreground shadow-sm">
+                <Layers className="size-4" />
               </div>
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">LedgeLens</span>
-                <span className="truncate text-xs text-muted-foreground">
+              <div className="grid flex-1 text-left leading-tight">
+                <span className="truncate font-semibold tracking-tight">
+                  LedgeLens
+                </span>
+                <span className="truncate text-xs text-sidebar-foreground/70">
                   Underwriting Workbench
                 </span>
               </div>
@@ -92,31 +80,41 @@ export function AppSidebar() {
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
-      <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {navItems.map((item) => (
-                <SidebarMenuItem key={item.href}>
-                  <SidebarMenuButton
-                    isActive={isActive(item.href)}
-                    tooltip={item.title}
-                    render={<Link href={item.href} />}
-                  >
-                    <item.icon />
-                    <span>{item.title}</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+      <SidebarContent className="px-2">
+        {navGroups.map((group) => (
+          <SidebarGroup key={group.label}>
+            <SidebarGroupLabel className="text-sidebar-foreground/50 uppercase tracking-wider">
+              {group.label}
+            </SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {group.items.map((item) => (
+                  <SidebarMenuItem key={item.href}>
+                    <SidebarMenuButton
+                      isActive={isActive(item.href)}
+                      tooltip={item.title}
+                      className="rounded-lg data-active:bg-sidebar-primary data-active:text-sidebar-primary-foreground"
+                      render={<Link href={item.href} />}
+                    >
+                      <item.icon />
+                      <span>{item.title}</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        ))}
       </SidebarContent>
-      <SidebarFooter className="border-t border-sidebar-border">
-        <p className="px-2 py-1 text-xs text-muted-foreground">
-          Phase 1 · Concept prototype
-        </p>
+      <SidebarFooter className="border-t border-sidebar-border p-3">
+        <div className="rounded-lg bg-sidebar-accent/50 px-3 py-2">
+          <p className="text-xs font-medium text-sidebar-foreground/90">
+            Phase 1 Prototype
+          </p>
+          <p className="mt-0.5 text-[10px] leading-relaxed text-sidebar-foreground/60">
+            Fictional data · FC dashboard view
+          </p>
+        </div>
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
