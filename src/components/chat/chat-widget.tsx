@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import {
   Bot,
   MessageCircle,
@@ -11,6 +12,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useChat } from "@/components/chat/chat-provider";
 import { generateAssistantResponse } from "@/lib/chat-assistant";
 import { cn } from "@/lib/utils";
 import type { ChatMessage } from "@/types/chat";
@@ -49,7 +51,7 @@ function renderMarkdownLite(text: string) {
 }
 
 export function ChatWidget() {
-  const [open, setOpen] = useState(false);
+  const { open, setOpen, toggle } = useChat();
   const [messages, setMessages] = useState<ChatMessage[]>([WELCOME_MESSAGE]);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -84,7 +86,6 @@ export function ChatWidget() {
       setInput("");
       setIsTyping(true);
 
-      // Simulated response delay for natural feel
       await new Promise((r) => setTimeout(r, 600 + Math.random() * 400));
 
       const response = generateAssistantResponse(trimmed);
@@ -113,12 +114,14 @@ export function ChatWidget() {
     }
   }
 
-  return (
+  if (typeof document === "undefined") return null;
+
+  return createPortal(
     <>
       {/* Chat panel */}
       <div
         className={cn(
-          "fixed z-50 flex flex-col overflow-hidden border border-border/60 bg-card shadow-2xl transition-all duration-300",
+          "fixed z-[9999] flex flex-col overflow-hidden border border-border/60 bg-card shadow-2xl transition-all duration-300",
           "inset-x-0 bottom-0 h-[min(85vh,640px)] rounded-t-2xl sm:inset-x-auto sm:right-6 sm:bottom-24 sm:h-[min(70vh,560px)] sm:w-[400px] sm:rounded-2xl",
           open
             ? "translate-y-0 opacity-100"
@@ -128,7 +131,6 @@ export function ChatWidget() {
         aria-label="LedgeLens Assistant chat"
         aria-hidden={!open}
       >
-        {/* Header */}
         <div className="flex items-center gap-3 border-b border-border/60 bg-primary px-4 py-3 text-primary-foreground">
           <div className="flex size-9 items-center justify-center rounded-xl bg-primary-foreground/15">
             <Sparkles className="size-4" />
@@ -150,7 +152,6 @@ export function ChatWidget() {
           </Button>
         </div>
 
-        {/* Messages */}
         <ScrollArea className="flex-1 px-4 py-4">
           <div className="space-y-4">
             {messages.map((msg) => (
@@ -205,7 +206,6 @@ export function ChatWidget() {
           </div>
         </ScrollArea>
 
-        {/* Suggested prompts */}
         {messages.length <= 1 && !isTyping ? (
           <div className="flex flex-wrap gap-2 border-t border-border/40 px-4 py-2">
             {SUGGESTED_PROMPTS.slice(0, 3).map((prompt) => (
@@ -221,7 +221,6 @@ export function ChatWidget() {
           </div>
         ) : null}
 
-        {/* Input */}
         <form
           onSubmit={handleSubmit}
           className="flex items-end gap-2 border-t border-border/60 p-3"
@@ -248,19 +247,19 @@ export function ChatWidget() {
         </form>
       </div>
 
-      {/* FAB */}
-      <Button
-        onClick={() => setOpen((v) => !v)}
-        size="icon-lg"
-        className={cn(
-          "fixed right-4 bottom-4 z-50 size-14 rounded-full shadow-lg transition-transform hover:scale-105 sm:right-6 sm:bottom-6",
-          open && "scale-0 opacity-0"
-        )}
-        aria-label={open ? "Close assistant" : "Open assistant"}
-        aria-expanded={open}
-      >
-        <MessageCircle className="size-6" />
-      </Button>
-    </>
+      {/* FAB — always on top */}
+      {!open ? (
+        <Button
+          onClick={toggle}
+          size="icon-lg"
+          className="fixed right-4 bottom-4 z-[9999] size-14 animate-pulse rounded-full shadow-xl ring-4 ring-primary/20 hover:animate-none hover:scale-105 sm:right-6 sm:bottom-6"
+          aria-label="Open LedgeLens Assistant"
+        >
+          <MessageCircle className="size-6" />
+          <span className="sr-only">Open chat assistant</span>
+        </Button>
+      ) : null}
+    </>,
+    document.body
   );
 }

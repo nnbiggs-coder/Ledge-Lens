@@ -1,6 +1,15 @@
+"use client";
+
 import { DisclaimerBanner } from "@/components/layout/disclaimer-banner";
 import { AppSidebar } from "@/components/layout/app-sidebar";
-import { ChatWidget } from "@/components/chat/chat-widget";
+import { ChatProvider } from "@/components/chat/chat-provider";
+import dynamic from "next/dynamic";
+
+const ChatWidget = dynamic(
+  () =>
+    import("@/components/chat/chat-widget").then((mod) => mod.ChatWidget),
+  { ssr: false }
+);
 import {
   SidebarInset,
   SidebarProvider,
@@ -15,9 +24,10 @@ interface AppShellProps {
 
 export function AppShell({ children }: AppShellProps) {
   return (
-    <SidebarProvider>
-      <AppSidebar />
-      <SidebarInset className="bg-background">
+    <ChatProvider>
+      <SidebarProvider>
+        <AppSidebar />
+        <SidebarInset className="bg-background">
         <DisclaimerBanner />
         <header className="sticky top-0 z-10 flex h-14 shrink-0 items-center gap-2 border-b border-border/60 bg-background/80 px-4 backdrop-blur-md sm:px-6">
           <SidebarTrigger className="-ml-1" />
@@ -45,5 +55,6 @@ export function AppShell({ children }: AppShellProps) {
         <ChatWidget />
       </SidebarInset>
     </SidebarProvider>
+    </ChatProvider>
   );
 }

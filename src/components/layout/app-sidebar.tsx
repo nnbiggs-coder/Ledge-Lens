@@ -11,6 +11,7 @@ import {
   ScrollText,
   Settings,
   Layers,
+  MessageCircle,
 } from "lucide-react";
 import {
   Sidebar,
@@ -25,6 +26,7 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import { useChat } from "@/components/chat/chat-provider";
 
 const navGroups = [
   {
@@ -48,6 +50,7 @@ const navGroups = [
 
 export function AppSidebar() {
   const pathname = usePathname();
+  const { setOpen } = useChat();
 
   function isActive(href: string) {
     if (href === "/") return pathname === "/";
@@ -107,7 +110,19 @@ export function AppSidebar() {
         ))}
       </SidebarContent>
       <SidebarFooter className="border-t border-sidebar-border p-3">
-        <div className="rounded-lg bg-sidebar-accent/50 px-3 py-2">
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              tooltip="Open Assistant"
+              className="rounded-lg bg-sidebar-primary/90 text-sidebar-primary-foreground hover:bg-sidebar-primary"
+              onClick={() => setOpen(true)}
+            >
+              <MessageCircle />
+              <span>Ask Assistant</span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+        <div className="mt-2 rounded-lg bg-sidebar-accent/50 px-3 py-2">
           <p className="text-xs font-medium text-sidebar-foreground/90">
             Phase 1 Prototype
           </p>
