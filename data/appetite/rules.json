@@ -1,0 +1,16 @@
+{
+  "excluded_states": ["AK", "HI"],
+  "excluded_industries": ["cannabis", "firearms manufacturing", "adult entertainment", "asbestos abatement"],
+  "excluded_operations": ["demolition", "crane operations", "underground mining", "fireworks manufacturing"],
+  "revenue_min": 500000,
+  "revenue_max": 100000000,
+  "delegated_authority_limit": 2000000,
+  "supported_products": [
+    "general_liability",
+    "excess_casualty",
+    "products_liability",
+    "architects_engineers_pl",
+    "miscellaneous_professional_liability"
+  ],
+  "notes": "Synthetic appetite rules for prototype only. Not Ledgebrook production rules."
+}

@@ -1,0 +1,32 @@
+{
+  "document": "UW-GL-Appetite-Guide-v3",
+  "product": "general_liability",
+  "title": "General Liability Appetite and Eligibility Guide (Synthetic)",
+  "passages": [
+    {
+      "section": "2.1 Eligible Classes",
+      "page": 4,
+      "text": "Janitorial, facilities maintenance, and light commercial services are generally eligible for General Liability when revenue is between $500,000 and $50,000,000 and operations exclude demolition, crane work, and roofing above three stories."
+    },
+    {
+      "section": "3.2 Loss History Referral",
+      "page": 9,
+      "text": "Any single claim with incurred severity at or above $250,000 requires senior underwriter referral before quoting. Three or more claims in five years require enhanced loss analysis."
+    },
+    {
+      "section": "4.1 Limit Authority",
+      "page": 12,
+      "text": "Delegated underwriting authority for occurrence limits is $2,000,000. Requests above this limit require senior referral and documented rationale."
+    },
+    {
+      "section": "5.3 Required Information",
+      "page": 15,
+      "text": "A complete GL submission requires ACORD application, currently valued loss runs (minimum 3 years), revenue confirmation, and operations description. Missing loss runs must be requested before bind recommendation."
+    },
+    {
+      "section": "6.1 Exclusions",
+      "page": 18,
+      "text": "Prohibited operations include demolition, underground mining, fireworks manufacturing, and cannabis-related exposures. These classes are out of appetite and should receive a decline recommendation after human approval."
+    }
+  ]
+}

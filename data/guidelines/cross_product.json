@@ -1,0 +1,22 @@
+{
+  "document": "UW-Cross-Product-Procedures-v1",
+  "product": "all",
+  "title": "Cross-Product Underwriting Procedures (Synthetic)",
+  "passages": [
+    {
+      "section": "1. Human Oversight",
+      "page": 1,
+      "text": "Material actions including decline communications, referral conclusions, quote progression, and core-system updates require accountable human approval. The agent prepares and recommends; the underwriter remains accountable."
+    },
+    {
+      "section": "2. Citation Standard",
+      "page": 2,
+      "text": "Guideline answers must cite approved document, section, and page. If evidence is insufficient, abstain rather than invent guidance."
+    },
+    {
+      "section": "3. Fairness",
+      "page": 3,
+      "text": "Protected-class attributes must not be used in appetite scoring or priority triage. Monitor proxy features such as ZIP code for disparate impact analysis."
+    }
+  ]
+}

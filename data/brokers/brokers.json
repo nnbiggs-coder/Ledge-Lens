@@ -1,0 +1,46 @@
+[
+  {
+    "name": "Harbor Peak Brokerage",
+    "aliases": ["harbor peak", "Jordan Lee", "jlee@harborpeak.example"],
+    "submission_count": 148,
+    "quote_rate": 0.72,
+    "bind_rate": 0.41,
+    "average_response_time_hours": 18,
+    "historical_portfolio_quality": "strong",
+    "quality_score": 0.88,
+    "source": "synthetic_broker_store"
+  },
+  {
+    "name": "Summit Wholesale Partners",
+    "aliases": ["summit wholesale", "Ava Chen"],
+    "submission_count": 96,
+    "quote_rate": 0.61,
+    "bind_rate": 0.33,
+    "average_response_time_hours": 28,
+    "historical_portfolio_quality": "good",
+    "quality_score": 0.74,
+    "source": "synthetic_broker_store"
+  },
+  {
+    "name": "Northline Specialty",
+    "aliases": ["northline", "Sam Ortiz"],
+    "submission_count": 54,
+    "quote_rate": 0.48,
+    "bind_rate": 0.22,
+    "average_response_time_hours": 42,
+    "historical_portfolio_quality": "average",
+    "quality_score": 0.58,
+    "source": "synthetic_broker_store"
+  },
+  {
+    "name": "Cascade Risk Intermediaries",
+    "aliases": ["cascade risk", "Priya Nair"],
+    "submission_count": 37,
+    "quote_rate": 0.44,
+    "bind_rate": 0.19,
+    "average_response_time_hours": 50,
+    "historical_portfolio_quality": "mixed",
+    "quality_score": 0.49,
+    "source": "synthetic_broker_store"
+  }
+]

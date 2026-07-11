@@ -1,0 +1,68 @@
+[
+  {
+    "name": "Cedar Grove Property Services LLC",
+    "industry": "janitorial services",
+    "years_in_business": 14,
+    "location_risk": "low",
+    "catastrophe_exposure": "low",
+    "public_description": "Commercial janitorial contractor serving office campuses in Texas.",
+    "building_information": {"occupied_sqft": 4200, "construction": "joisted_masonry"},
+    "registration_status": "active",
+    "source": "synthetic_company_store"
+  },
+  {
+    "name": "Brightline Design Group",
+    "industry": "architectural services",
+    "years_in_business": 9,
+    "location_risk": "low",
+    "catastrophe_exposure": "moderate",
+    "public_description": "Architecture and engineering design firm.",
+    "building_information": {"occupied_sqft": 11000, "construction": "noncombustible"},
+    "registration_status": "active",
+    "source": "synthetic_company_store"
+  },
+  {
+    "name": "IronSpan Demolition Co",
+    "industry": "demolition",
+    "years_in_business": 6,
+    "location_risk": "high",
+    "catastrophe_exposure": "moderate",
+    "public_description": "Structural demolition contractor.",
+    "building_information": {},
+    "registration_status": "active",
+    "source": "synthetic_company_store"
+  },
+  {
+    "name": "Nova Components Inc",
+    "industry": "manufacturing",
+    "years_in_business": 22,
+    "location_risk": "moderate",
+    "catastrophe_exposure": "low",
+    "public_description": "Component manufacturer for industrial equipment.",
+    "building_information": {"occupied_sqft": 85000, "construction": "fire_resistive"},
+    "registration_status": "active",
+    "source": "synthetic_company_store"
+  },
+  {
+    "name": "Ambiguous Ventures LLC",
+    "industry": "mixed_operations",
+    "years_in_business": 3,
+    "location_risk": "moderate",
+    "catastrophe_exposure": "unknown",
+    "public_description": "Public records conflict between retail and light manufacturing.",
+    "building_information": {},
+    "registration_status": "active",
+    "source": "synthetic_company_store"
+  },
+  {
+    "name": "Lakeside Facilities Management",
+    "industry": "facilities management",
+    "years_in_business": 11,
+    "location_risk": "low",
+    "catastrophe_exposure": "low",
+    "public_description": "Facilities maintenance for commercial properties.",
+    "building_information": {"occupied_sqft": 6000, "construction": "joisted_masonry"},
+    "registration_status": "active",
+    "source": "synthetic_company_store"
+  }
+]

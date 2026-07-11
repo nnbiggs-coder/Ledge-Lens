@@ -4,13 +4,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
-  Inbox,
-  FilePlus2,
-  Scale,
-  BarChart3,
+  Bot,
+  Gauge,
   ScrollText,
   Settings,
   Shield,
+  FlaskConical,
 } from "lucide-react";
 import {
   Sidebar,
@@ -27,41 +26,12 @@ import {
 } from "@/components/ui/sidebar";
 
 const navItems = [
-  {
-    title: "Dashboard",
-    href: "/",
-    icon: LayoutDashboard,
-  },
-  {
-    title: "Submissions",
-    href: "/submissions",
-    icon: Inbox,
-  },
-  {
-    title: "New Submission",
-    href: "/submissions/new",
-    icon: FilePlus2,
-  },
-  {
-    title: "Underwriting Rules",
-    href: "/underwriting-rules",
-    icon: Scale,
-  },
-  {
-    title: "Analytics",
-    href: "/analytics",
-    icon: BarChart3,
-  },
-  {
-    title: "Audit Log",
-    href: "/audit-log",
-    icon: ScrollText,
-  },
-  {
-    title: "Settings",
-    href: "/settings",
-    icon: Settings,
-  },
+  { title: "Agent Queue", href: "/", icon: Bot },
+  { title: "Demo Scenarios", href: "/scenarios", icon: FlaskConical },
+  { title: "Performance", href: "/performance", icon: Gauge },
+  { title: "Governance", href: "/settings", icon: Settings },
+  { title: "Audit", href: "/audit-log", icon: ScrollText },
+  { title: "Workbench", href: "/submissions", icon: LayoutDashboard },
 ];
 
 export function AppSidebar() {
@@ -69,7 +39,6 @@ export function AppSidebar() {
 
   function isActive(href: string) {
     if (href === "/") return pathname === "/";
-    if (href === "/submissions") return pathname === "/submissions";
     return pathname === href || pathname.startsWith(`${href}/`);
   }
 
@@ -83,9 +52,9 @@ export function AppSidebar() {
                 <Shield className="size-4" />
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">LedgeLens</span>
+                <span className="truncate font-semibold">Submission Intelligence</span>
                 <span className="truncate text-xs text-muted-foreground">
-                  Underwriting Workbench
+                  Ledgebrook Agent Prototype
                 </span>
               </div>
             </SidebarMenuButton>
@@ -94,7 +63,7 @@ export function AppSidebar() {
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+          <SidebarGroupLabel>Operator Console</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {navItems.map((item) => (
@@ -115,7 +84,7 @@ export function AppSidebar() {
       </SidebarContent>
       <SidebarFooter className="border-t border-sidebar-border">
         <p className="px-2 py-1 text-xs text-muted-foreground">
-          Phase 1 · Concept prototype
+          AI interprets. Automation executes. Underwriters decide.
         </p>
       </SidebarFooter>
       <SidebarRail />

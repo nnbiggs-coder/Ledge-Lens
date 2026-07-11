@@ -14,9 +14,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "LedgeLens | Underwriting Workbench",
+  title: "Ledgebrook Submission Intelligence Agent",
   description:
-    "Insurance underwriting intelligence workbench — independent concept prototype.",
+    "AI interprets. Automation executes. Underwriters decide. Synthetic underwriting decision-support prototype.",
 };
 
 export default function RootLayout({
